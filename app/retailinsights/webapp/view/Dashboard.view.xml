@@ -1,0 +1,274 @@
+<mvc:View
+    controllerName="retail.analytics.retailinsights.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:vizData="sap.viz.ui5.data"
+    xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds">
+
+    <Page id="page" title="{i18n>appTitle}" showHeader="true" class="sapUiContentPadding">
+
+        <!-- ============================= SMART FILTER BAR ============================= -->
+        <!--
+          Flexbox filter bar: the three dropdowns keep a small fixed width
+          (baseSize 9rem, no grow/shrink) while the two sliders grow (growFactor)
+          to absorb all remaining width. Fills the bar end-to-end (no empty top-
+          right gap) and wraps cleanly on narrow screens.
+        -->
+        <Panel headerText="{i18n>filterBarTitle}" class="riFilterBar" expandable="false">
+            <content>
+                <HBox width="100%" wrap="Wrap" alignItems="End" renderType="Bare">
+
+                    <VBox class="riFilterItem">
+                        <layoutData>
+                            <FlexItemData growFactor="0" shrinkFactor="0" baseSize="9rem"/>
+                        </layoutData>
+                        <Label text="{i18n>continent}" labelFor="continentSelect"/>
+                        <Select id="continentSelect"
+                                width="100%"
+                                forceSelection="false"
+                                change=".onContinentChange"
+                                items="{geo>/continents}">
+                            <core:Item key="{geo>key}" text="{geo>text}"/>
+                        </Select>
+                    </VBox>
+
+                    <VBox class="riFilterItem">
+                        <layoutData>
+                            <FlexItemData growFactor="0" shrinkFactor="0" baseSize="9rem"/>
+                        </layoutData>
+                        <Label text="{i18n>country}" labelFor="countrySelect"/>
+                        <Select id="countrySelect"
+                                width="100%"
+                                enabled="false"
+                                forceSelection="false"
+                                change=".onCountryChange"
+                                items="{geo>/countries}">
+                            <core:Item key="{geo>key}" text="{geo>text}"/>
+                        </Select>
+                    </VBox>
+
+                    <VBox class="riFilterItem">
+                        <layoutData>
+                            <FlexItemData growFactor="0" shrinkFactor="0" baseSize="9rem"/>
+                        </layoutData>
+                        <Label text="{i18n>ageCategory}" labelFor="ageSelect"/>
+                        <Select id="ageSelect" width="100%" change=".onAgeChange">
+                            <core:Item key="" text="{i18n>all}"/>
+                            <core:Item key="Youth" text="{i18n>youth}"/>
+                            <core:Item key="Senior" text="{i18n>senior}"/>
+                        </Select>
+                    </VBox>
+
+                    <VBox class="riFilterItem">
+                        <layoutData>
+                            <FlexItemData growFactor="3" baseSize="16rem" minWidth="14rem"/>
+                        </layoutData>
+                        <Label text="{ui>/vipLabel}" labelFor="vipSlider"/>
+                        <Slider id="vipSlider"
+                                width="100%"
+                                min="8" max="14" step="1" value="12"
+                                enableTickmarks="true"
+                                showAdvancedTooltip="true"
+                                change=".onVipChange"/>
+                    </VBox>
+
+                    <VBox class="riFilterItem">
+                        <layoutData>
+                            <FlexItemData growFactor="3" baseSize="16rem" minWidth="14rem"/>
+                        </layoutData>
+                        <Label text="{ui>/flagshipLabel}" labelFor="flagshipSlider"/>
+                        <Slider id="flagshipSlider"
+                                width="100%"
+                                min="5" max="50" step="5" value="20"
+                                enableTickmarks="true"
+                                showAdvancedTooltip="true"
+                                change=".onFlagshipChange"/>
+                    </VBox>
+
+                </HBox>
+            </content>
+        </Panel>
+
+        <!-- ================================ KPI HEADER ================================ -->
+        <l:HorizontalLayout allowWrapping="true" class="sapUiSmallMarginTop">
+            <GenericTile class="riKpiTile" header="{i18n>kpiVip}" frameType="OneByOne">
+                <tileContent>
+                    <TileContent>
+                        <content>
+                            <NumericContent value="{kpi>/vipCount}" valueColor="Good" icon="sap-icon://customer"/>
+                        </content>
+                    </TileContent>
+                </tileContent>
+            </GenericTile>
+
+            <GenericTile class="riKpiTile" header="{i18n>kpiStar}" frameType="OneByOne">
+                <tileContent>
+                    <TileContent>
+                        <content>
+                            <NumericContent value="{kpi>/starCount}" valueColor="Good" icon="sap-icon://favorite"/>
+                        </content>
+                    </TileContent>
+                </tileContent>
+            </GenericTile>
+
+            <GenericTile class="riKpiTile" header="{i18n>kpiFlagship}" frameType="OneByOne">
+                <tileContent>
+                    <TileContent>
+                        <content>
+                            <NumericContent value="{kpi>/flagshipCount}" valueColor="Good" icon="sap-icon://retail-store"/>
+                        </content>
+                    </TileContent>
+                </tileContent>
+            </GenericTile>
+        </l:HorizontalLayout>
+
+        <!-- ============================== THREE-COLUMN CHARTS ========================= -->
+        <l:Grid defaultSpan="L4 M4 S12" hSpacing="1" vSpacing="1" class="sapUiSmallMarginTop">
+
+            <!-- LEFT: Customer Segments (Donut). Click filters table only. -->
+            <Panel headerText="{i18n>chartCustomers}" class="riChartPanel">
+                <viz:VizFrame id="donutChart" vizType="donut" height="340px" width="100%"
+                        uiConfig="{applicationSet:'fiori'}"
+                        class="riChart"
+                        selectData=".onDonutSelect"
+                        deselectData=".onDonutDeselect">
+                    <viz:dataset>
+                        <vizData:FlattenedDataset data="{chart>/donut}">
+                            <vizData:dimensions>
+                                <vizData:DimensionDefinition name="Segment" value="{chart>Segment}"/>
+                            </vizData:dimensions>
+                            <vizData:measures>
+                                <vizData:MeasureDefinition name="Customers" value="{chart>Count}"/>
+                            </vizData:measures>
+                        </vizData:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <vizFeeds:FeedItem uid="size" type="Measure" values="Customers"/>
+                        <vizFeeds:FeedItem uid="color" type="Dimension" values="Segment"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+
+            <!-- MIDDLE: Product Performance (Scatter, median cross-lines). Click filters table only. -->
+            <Panel headerText="{i18n>chartProducts}" class="riChartPanel">
+                <viz:VizFrame id="productChart" vizType="scatter" height="340px" width="100%"
+                        uiConfig="{applicationSet:'fiori'}"
+                        class="riChart"
+                        selectData=".onProductSelect"
+                        deselectData=".onProductDeselect">
+                    <viz:dataset>
+                        <vizData:FlattenedDataset data="{chart>/products}">
+                            <vizData:dimensions>
+                                <vizData:DimensionDefinition name="Product" value="{chart>ProductName}"/>
+                                <vizData:DimensionDefinition name="Quadrant" value="{chart>ProductQuadrant}"/>
+                                <vizData:DimensionDefinition name="ProductKey" value="{chart>ProductKey}"/>
+                            </vizData:dimensions>
+                            <vizData:measures>
+                                <vizData:MeasureDefinition name="Quantity" value="{chart>TotalQuantitySold}"/>
+                                <vizData:MeasureDefinition name="Margin" value="{chart>MarginPercent}"/>
+                            </vizData:measures>
+                        </vizData:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <vizFeeds:FeedItem uid="valueAxis" type="Measure" values="Quantity"/>
+                        <vizFeeds:FeedItem uid="valueAxis2" type="Measure" values="Margin"/>
+                        <vizFeeds:FeedItem uid="color" type="Dimension" values="Product"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+
+            <!-- RIGHT: Store Footprint vs Revenue (Scatter). Click filters table only. -->
+            <Panel headerText="{i18n>chartStores}" class="riChartPanel">
+                <viz:VizFrame id="storeChart" vizType="scatter" height="340px" width="100%"
+                        uiConfig="{applicationSet:'fiori'}"
+                        class="riChart"
+                        selectData=".onStoreSelect"
+                        deselectData=".onStoreDeselect">
+                    <viz:dataset>
+                        <vizData:FlattenedDataset data="{chart>/stores}">
+                            <vizData:dimensions>
+                                <vizData:DimensionDefinition name="Store" value="{chart>StoreName}"/>
+                                <vizData:DimensionDefinition name="Tier" value="{chart>StoreTier}"/>
+                                <vizData:DimensionDefinition name="StoreKey" value="{chart>StoreKey}"/>
+                            </vizData:dimensions>
+                            <vizData:measures>
+                                <vizData:MeasureDefinition name="SquareMeters" value="{chart>SquareMeters}"/>
+                                <vizData:MeasureDefinition name="Revenue" value="{chart>TotalRevenueUSD}"/>
+                            </vizData:measures>
+                        </vizData:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <vizFeeds:FeedItem uid="valueAxis" type="Measure" values="SquareMeters"/>
+                        <vizFeeds:FeedItem uid="valueAxis2" type="Measure" values="Revenue"/>
+                        <vizFeeds:FeedItem uid="color" type="Dimension" values="Store"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+        </l:Grid>
+
+        <!-- ================================= TABLE =================================== -->
+        <!--
+          Responsive sap.m.Table (flow layout). The earlier sap.ui.table.Table
+          (grid table) is absolutely positioned and needs a parent with a fixed,
+          measurable height; inside this vertically-scrolling sap.m.Page it had
+          no height to measure, so it collapsed to one row with overlapping
+          columns and inner cell scrollbars. sap.m.Table flows in the page, needs
+          no height, has no nested scroller, and pops in columns on small screens.
+          `growing` keeps the DOM light even though the model holds up to 2000 rows.
+        -->
+        <Table id="ordersTable"
+                items="{table>/rows}"
+                growing="true"
+                growingThreshold="100"
+                growingScrollToLoad="false"
+                sticky="ColumnHeaders,HeaderToolbar"
+                width="100%"
+                class="sapUiSmallMarginTop"
+                ariaLabelledBy="tableHeader">
+            <headerToolbar>
+                <OverflowToolbar>
+                    <Title id="tableHeader" text="{i18n>tableTitle}"/>
+                    <ToolbarSpacer/>
+                    <Text text="{table>/count} / {table>/total}"/>
+                    <Button icon="sap-icon://clear-filter" tooltip="Clear chart selections" press=".onClearChartFilters"/>
+                </OverflowToolbar>
+            </headerToolbar>
+            <columns>
+                <Column width="9rem">
+                    <Text text="{i18n>colOrderNumber}"/>
+                </Column>
+                <Column width="10rem" demandPopin="true" minScreenWidth="Tablet">
+                    <Text text="{i18n>colSegment}"/>
+                </Column>
+                <Column>
+                    <Text text="{i18n>colProduct}"/>
+                </Column>
+                <Column width="11rem" demandPopin="true" minScreenWidth="Tablet">
+                    <Text text="{i18n>colQuadrant}"/>
+                </Column>
+                <Column width="11rem" demandPopin="true" minScreenWidth="Tablet">
+                    <Text text="{i18n>colTier}"/>
+                </Column>
+                <Column width="11rem" hAlign="End">
+                    <Text text="{i18n>colRevenue}"/>
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem vAlign="Middle">
+                    <cells>
+                        <Text text="{table>OrderNumber}"/>
+                        <ObjectStatus text="{table>CustomerSegment}" state="{path: 'table>CustomerSegment', formatter: '.formatter.segmentState'}" inverted="true"/>
+                        <Text text="{table>ProductName}"/>
+                        <ObjectStatus text="{table>ProductQuadrant}" state="{path: 'table>ProductQuadrant', formatter: '.formatter.quadrantState'}" inverted="true"/>
+                        <ObjectStatus text="{table>StoreTier}" state="{path: 'table>StoreTier', formatter: '.formatter.tierState'}" inverted="true"/>
+                        <ObjectNumber number="{table>GrossRevenueUSD}" unit="USD"/>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+
+    </Page>
+</mvc:View>

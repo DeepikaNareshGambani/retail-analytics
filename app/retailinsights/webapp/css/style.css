@@ -1,0 +1,18 @@
+/* Filter flex items: right gap separates them; box-sizing keeps the item's
+   outer width equal to its FlexItemData baseSize so the flex math stays clean. */
+.riFilterItem {
+    padding: 0.25rem 0.75rem 0.25rem 0;
+    box-sizing: border-box;
+}
+
+.riKpiTile {
+    margin: 0.25rem 0.5rem;
+}
+
+.riChartPanel .sapMPanelContent {
+    padding: 0.25rem;
+}
+
+.riChart {
+    min-height: 340px;
+}
