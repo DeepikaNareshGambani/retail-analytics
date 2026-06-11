@@ -1,0 +1,1141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.xml">
+    <edmx:Include Alias="Aggregation" Namespace="Org.OData.Aggregation.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Analytics.xml">
+    <edmx:Include Alias="Analytics" Namespace="com.sap.vocabularies.Analytics.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="AnalyticsService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Annotation Term="Core.Links">
+        <Collection>
+          <Record>
+            <PropertyValue Property="rel" String="author"/>
+            <PropertyValue Property="href" String="https://cap.cloud.sap"/>
+          </Record>
+        </Collection>
+      </Annotation>
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="SalesFacts" EntityType="AnalyticsService.SalesFacts"/>
+        <EntitySet Name="RevenueByCountry" EntityType="AnalyticsService.RevenueByCountry"/>
+        <EntitySet Name="RevenueByCategory" EntityType="AnalyticsService.RevenueByCategory"/>
+        <EntitySet Name="MonthlySalesTrend" EntityType="AnalyticsService.MonthlySalesTrend"/>
+        <EntitySet Name="TopProducts" EntityType="AnalyticsService.TopProducts"/>
+        <EntitySet Name="StorePerformance" EntityType="AnalyticsService.StorePerformance"/>
+        <EntitySet Name="OverallPerformance" EntityType="AnalyticsService.OverallPerformance"/>
+        <EntitySet Name="Customers" EntityType="AnalyticsService.Customers">
+          <NavigationPropertyBinding Path="sales" Target="Sales"/>
+        </EntitySet>
+        <EntitySet Name="Sales" EntityType="AnalyticsService.Sales">
+          <NavigationPropertyBinding Path="customer" Target="Customers"/>
+          <NavigationPropertyBinding Path="store" Target="Stores"/>
+          <NavigationPropertyBinding Path="product" Target="Products"/>
+        </EntitySet>
+        <EntitySet Name="Stores" EntityType="AnalyticsService.Stores">
+          <NavigationPropertyBinding Path="sales" Target="Sales"/>
+        </EntitySet>
+        <EntitySet Name="Products" EntityType="AnalyticsService.Products">
+          <NavigationPropertyBinding Path="sales" Target="Sales"/>
+        </EntitySet>
+        <EntitySet Name="ExchangeRates" EntityType="AnalyticsService.ExchangeRates"/>
+      </EntityContainer>
+      <EntityType Name="SalesFacts">
+        <Key>
+          <PropertyRef Name="orderNumber"/>
+          <PropertyRef Name="lineItem"/>
+        </Key>
+        <Property Name="orderNumber" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="lineItem" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="orderDate" Type="Edm.Date"/>
+        <Property Name="orderYear" Type="Edm.Int32"/>
+        <Property Name="orderMonth" Type="Edm.Int32"/>
+        <Property Name="customerCountry" Type="Edm.String" MaxLength="100"/>
+        <Property Name="customerContinent" Type="Edm.String" MaxLength="50"/>
+        <Property Name="productKey" Type="Edm.Int32"/>
+        <Property Name="productName" Type="Edm.String" MaxLength="300"/>
+        <Property Name="brand" Type="Edm.String" MaxLength="100"/>
+        <Property Name="category" Type="Edm.String" MaxLength="100"/>
+        <Property Name="subcategory" Type="Edm.String" MaxLength="100"/>
+        <Property Name="storeKey" Type="Edm.Int32"/>
+        <Property Name="storeCountry" Type="Edm.String" MaxLength="100"/>
+        <Property Name="storeState" Type="Edm.String" MaxLength="100"/>
+        <Property Name="squareMeters" Type="Edm.Decimal" Precision="12" Scale="2"/>
+        <Property Name="currencyCode" Type="Edm.String" MaxLength="3"/>
+        <Property Name="quantity" Type="Edm.Int32"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="costUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+      </EntityType>
+      <EntityType Name="RevenueByCountry">
+        <Key>
+          <PropertyRef Name="country"/>
+        </Key>
+        <Property Name="country" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="continent" Type="Edm.String" MaxLength="50"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="costUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="totalQuantity" Type="Edm.Int32"/>
+        <Property Name="orderCount" Type="Edm.Int32"/>
+        <Property Name="marginPercent" Type="Edm.Decimal" Precision="7" Scale="2"/>
+      </EntityType>
+      <EntityType Name="RevenueByCategory">
+        <Key>
+          <PropertyRef Name="category"/>
+        </Key>
+        <Property Name="category" Type="Edm.String" MaxLength="100" Nullable="false"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="costUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="totalQuantity" Type="Edm.Int32"/>
+        <Property Name="productCount" Type="Edm.Int32"/>
+        <Property Name="marginPercent" Type="Edm.Decimal" Precision="7" Scale="2"/>
+      </EntityType>
+      <EntityType Name="MonthlySalesTrend">
+        <Key>
+          <PropertyRef Name="salesYear"/>
+          <PropertyRef Name="salesMonth"/>
+        </Key>
+        <Property Name="salesYear" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="salesMonth" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="costUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="totalQuantity" Type="Edm.Int32"/>
+        <Property Name="orderCount" Type="Edm.Int32"/>
+      </EntityType>
+      <EntityType Name="TopProducts">
+        <Key>
+          <PropertyRef Name="productKey"/>
+        </Key>
+        <Property Name="productKey" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="productName" Type="Edm.String" MaxLength="300"/>
+        <Property Name="brand" Type="Edm.String" MaxLength="100"/>
+        <Property Name="category" Type="Edm.String" MaxLength="100"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="totalQuantity" Type="Edm.Int32"/>
+        <Property Name="marginPercent" Type="Edm.Decimal" Precision="7" Scale="2"/>
+      </EntityType>
+      <EntityType Name="StorePerformance">
+        <Key>
+          <PropertyRef Name="storeKey"/>
+        </Key>
+        <Property Name="storeKey" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="country" Type="Edm.String" MaxLength="100"/>
+        <Property Name="state" Type="Edm.String" MaxLength="100"/>
+        <Property Name="squareMeters" Type="Edm.Decimal" Precision="12" Scale="2"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="totalQuantity" Type="Edm.Int32"/>
+        <Property Name="orderCount" Type="Edm.Int32"/>
+        <Property Name="marginPercent" Type="Edm.Decimal" Precision="7" Scale="2"/>
+        <Property Name="revenuePerSqm" Type="Edm.Decimal" Precision="15" Scale="2"/>
+      </EntityType>
+      <EntityType Name="OverallPerformance">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="costUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="totalQuantity" Type="Edm.Int32"/>
+        <Property Name="orderCount" Type="Edm.Int32"/>
+        <Property Name="marginPercent" Type="Edm.Decimal" Precision="7" Scale="2"/>
+      </EntityType>
+      <EntityType Name="Customers">
+        <Key>
+          <PropertyRef Name="CustomerKey"/>
+        </Key>
+        <Property Name="CustomerKey" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="gender" Type="Edm.String" MaxLength="10"/>
+        <Property Name="name" Type="Edm.String" MaxLength="200"/>
+        <Property Name="city" Type="Edm.String" MaxLength="100"/>
+        <Property Name="stateCode" Type="Edm.String" MaxLength="10"/>
+        <Property Name="state" Type="Edm.String" MaxLength="100"/>
+        <Property Name="zipCode" Type="Edm.String" MaxLength="20"/>
+        <Property Name="country" Type="Edm.String" MaxLength="100"/>
+        <Property Name="continent" Type="Edm.String" MaxLength="50"/>
+        <Property Name="birthday" Type="Edm.Date"/>
+        <NavigationProperty Name="sales" Type="Collection(AnalyticsService.Sales)" Partner="customer"/>
+      </EntityType>
+      <EntityType Name="Sales">
+        <Key>
+          <PropertyRef Name="orderNumber"/>
+          <PropertyRef Name="lineItem"/>
+        </Key>
+        <Property Name="orderNumber" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="lineItem" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="orderDate" Type="Edm.Date"/>
+        <Property Name="deliveryDate" Type="Edm.Date"/>
+        <NavigationProperty Name="customer" Type="AnalyticsService.Customers" Partner="sales">
+          <ReferentialConstraint Property="customer_CustomerKey" ReferencedProperty="CustomerKey"/>
+        </NavigationProperty>
+        <Property Name="customer_CustomerKey" Type="Edm.Int32"/>
+        <NavigationProperty Name="store" Type="AnalyticsService.Stores" Partner="sales">
+          <ReferentialConstraint Property="store_StoreKey" ReferencedProperty="StoreKey"/>
+        </NavigationProperty>
+        <Property Name="store_StoreKey" Type="Edm.Int32"/>
+        <NavigationProperty Name="product" Type="AnalyticsService.Products" Partner="sales">
+          <ReferentialConstraint Property="product_ProductKey" ReferencedProperty="ProductKey"/>
+        </NavigationProperty>
+        <Property Name="product_ProductKey" Type="Edm.Int32"/>
+        <Property Name="quantity" Type="Edm.Int32"/>
+        <Property Name="currencyCode" Type="Edm.String" MaxLength="3"/>
+        <Property Name="revenueUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="costUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitUSD" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="marginPercent" Type="Edm.Decimal" Precision="7" Scale="2"/>
+        <Property Name="revenueLocal" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="costLocal" Type="Edm.Decimal" Precision="15" Scale="2"/>
+        <Property Name="profitLocal" Type="Edm.Decimal" Precision="15" Scale="2"/>
+      </EntityType>
+      <EntityType Name="Stores">
+        <Key>
+          <PropertyRef Name="StoreKey"/>
+        </Key>
+        <Property Name="StoreKey" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="country" Type="Edm.String" MaxLength="100"/>
+        <Property Name="state" Type="Edm.String" MaxLength="100"/>
+        <Property Name="squareMeters" Type="Edm.Decimal" Precision="12" Scale="2"/>
+        <Property Name="openDate" Type="Edm.Date"/>
+        <NavigationProperty Name="sales" Type="Collection(AnalyticsService.Sales)" Partner="store"/>
+      </EntityType>
+      <EntityType Name="Products">
+        <Key>
+          <PropertyRef Name="ProductKey"/>
+        </Key>
+        <Property Name="ProductKey" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="productName" Type="Edm.String" MaxLength="300"/>
+        <Property Name="brand" Type="Edm.String" MaxLength="100"/>
+        <Property Name="color" Type="Edm.String" MaxLength="50"/>
+        <Property Name="unitCostUSD" Type="Edm.Decimal" Precision="12" Scale="2"/>
+        <Property Name="unitPriceUSD" Type="Edm.Decimal" Precision="12" Scale="2"/>
+        <Property Name="subcategoryKey" Type="Edm.Int32"/>
+        <Property Name="subcategory" Type="Edm.String" MaxLength="100"/>
+        <Property Name="categoryKey" Type="Edm.Int32"/>
+        <Property Name="category" Type="Edm.String" MaxLength="100"/>
+        <NavigationProperty Name="sales" Type="Collection(AnalyticsService.Sales)" Partner="product"/>
+      </EntityType>
+      <EntityType Name="ExchangeRates">
+        <Key>
+          <PropertyRef Name="date"/>
+          <PropertyRef Name="currency"/>
+        </Key>
+        <Property Name="date" Type="Edm.Date" Nullable="false"/>
+        <Property Name="currency" Type="Edm.String" MaxLength="3" Nullable="false"/>
+        <Property Name="exchange" Type="Edm.Decimal" Precision="15" Scale="6"/>
+      </EntityType>
+      <Annotations Target="AnalyticsService.SalesFacts">
+        <Annotation Term="Aggregation.ApplySupported">
+          <Record Type="Aggregation.ApplySupportedType">
+            <PropertyValue Property="Transformations">
+              <Collection>
+                <String>aggregate</String>
+                <String>groupby</String>
+                <String>filter</String>
+                <String>concat</String>
+                <String>identity</String>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Rollup" EnumMember="Aggregation.RollupType/None"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="revenueUSD" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="costUSD" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="profitUSD" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="quantity" String="Edm.Int32"/>
+        <Annotation Term="UI.DataPoint" Qualifier="revenue">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="revenueUSD"/>
+            <PropertyValue Property="Title" String="Revenue (USD)"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="profit">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="profitUSD"/>
+            <PropertyValue Property="Title" String="Profit (USD)"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>customerCountry</PropertyPath>
+            <PropertyPath>customerContinent</PropertyPath>
+            <PropertyPath>category</PropertyPath>
+            <PropertyPath>brand</PropertyPath>
+            <PropertyPath>orderYear</PropertyPath>
+            <PropertyPath>storeCountry</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="customerCountry"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="category"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="brand"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="orderYear"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="revenueUSD"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="profitUSD"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="quantity"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.Chart">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>category</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>revenueUSD</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="category"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                  <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#revenue"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart</AnnotationPath>
+                <AnnotationPath>@UI.LineItem</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="byCountry">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="Title" String="Revenue by Country"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>customerCountry</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>revenueUSD</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="customerCountry"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                  <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#revenue"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byCountry">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byCountry</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>customerCountry</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MaxItems" Int="15"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="byCategory">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="Title" String="Revenue by Category"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>category</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>revenueUSD</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="category"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                  <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#revenue"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byCategory">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byCategory</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>category</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="byMonth">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="Title" String="Monthly Sales Trend"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>orderYear</PropertyPath>
+                <PropertyPath>orderMonth</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>revenueUSD</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="orderYear"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="orderMonth"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                  <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#revenue"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byMonth">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byMonth</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>orderYear</PropertyPath>
+                <PropertyPath>orderMonth</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="orderYear"/>
+                  <PropertyValue Property="Descending" Bool="false"/>
+                </Record>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="orderMonth"/>
+                  <PropertyValue Property="Descending" Bool="false"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="byStore">
+          <Record Type="UI.ChartDefinitionType">
+            <PropertyValue Property="Title" String="Store Performance"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+            <PropertyValue Property="Dimensions">
+              <Collection>
+                <PropertyPath>storeCountry</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Measures">
+              <Collection>
+                <PropertyPath>revenueUSD</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="DimensionAttributes">
+              <Collection>
+                <Record Type="UI.ChartDimensionAttributeType">
+                  <PropertyValue Property="Dimension" PropertyPath="storeCountry"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MeasureAttributes">
+              <Collection>
+                <Record Type="UI.ChartMeasureAttributeType">
+                  <PropertyValue Property="Measure" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                  <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#revenue"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byStore">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byStore</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>storeCountry</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MaxItems" Int="15"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/SalesFacts">
+        <Annotation Term="Aggregation.ApplySupported">
+          <Record Type="Aggregation.ApplySupportedType">
+            <PropertyValue Property="Transformations">
+              <Collection>
+                <String>aggregate</String>
+                <String>groupby</String>
+                <String>filter</String>
+                <String>concat</String>
+                <String>identity</String>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Rollup" EnumMember="Aggregation.RollupType/None"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="revenueUSD" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="costUSD" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="profitUSD" String="Edm.Decimal"/>
+        <Annotation Term="Aggregation.CustomAggregate" Qualifier="quantity" String="Edm.Int32"/>
+        <Annotation Term="UI.PresentationVariant">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart</AnnotationPath>
+                <AnnotationPath>@UI.LineItem</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byCountry">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byCountry</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>customerCountry</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MaxItems" Int="15"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byCategory">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byCategory</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>category</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byMonth">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byMonth</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>orderYear</PropertyPath>
+                <PropertyPath>orderMonth</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="orderYear"/>
+                  <PropertyValue Property="Descending" Bool="false"/>
+                </Record>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="orderMonth"/>
+                  <PropertyValue Property="Descending" Bool="false"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="byStore">
+          <Record Type="UI.PresentationVariantType">
+            <PropertyValue Property="Visualizations">
+              <Collection>
+                <AnnotationPath>@UI.Chart#byStore</AnnotationPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="GroupBy">
+              <Collection>
+                <PropertyPath>storeCountry</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="Common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="revenueUSD"/>
+                  <PropertyValue Property="Descending" Bool="true"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="MaxItems" Int="15"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/orderYear">
+        <Annotation Term="Common.Label" String="Year"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/orderMonth">
+        <Annotation Term="Common.Label" String="Month"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/customerCountry">
+        <Annotation Term="Common.Label" String="Country"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/customerContinent">
+        <Annotation Term="Common.Label" String="Continent"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/productName">
+        <Annotation Term="Common.Label" String="Product"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/brand">
+        <Annotation Term="Common.Label" String="Brand"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/category">
+        <Annotation Term="Common.Label" String="Category"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/subcategory">
+        <Annotation Term="Common.Label" String="Subcategory"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/storeCountry">
+        <Annotation Term="Common.Label" String="Store Country"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/storeState">
+        <Annotation Term="Common.Label" String="Store State"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/quantity">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
+        <Annotation Term="Common.Label" String="Quantity"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/revenueUSD">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
+        <Annotation Term="Common.Label" String="Revenue (USD)"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/costUSD">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
+        <Annotation Term="Common.Label" String="Cost (USD)"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.SalesFacts/profitUSD">
+        <Annotation Term="Analytics.Measure" Bool="true"/>
+        <Annotation Term="Common.Label" String="Profit (USD)"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/RevenueByCountry">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCountry/revenueUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCountry/costUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCountry/profitUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCountry/totalQuantity">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCountry/orderCount">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCountry/marginPercent">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/RevenueByCategory">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCategory/revenueUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCategory/costUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCategory/profitUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCategory/totalQuantity">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCategory/productCount">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.RevenueByCategory/marginPercent">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/MonthlySalesTrend">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.MonthlySalesTrend/revenueUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.MonthlySalesTrend/costUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.MonthlySalesTrend/profitUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.MonthlySalesTrend/totalQuantity">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.MonthlySalesTrend/orderCount">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/TopProducts">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.TopProducts/revenueUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.TopProducts/profitUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.TopProducts/totalQuantity">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.TopProducts/marginPercent">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/StorePerformance">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.StorePerformance/revenueUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.StorePerformance/profitUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.StorePerformance/totalQuantity">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.StorePerformance/orderCount">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.StorePerformance/marginPercent">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.StorePerformance/revenuePerSqm">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance">
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="revenueUSD"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="profitUSD"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="marginPercent"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="revenue">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="revenueUSD"/>
+            <PropertyValue Property="Title" String="Total Revenue (USD)"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="profit">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="profitUSD"/>
+            <PropertyValue Property="Title" String="Total Profit (USD)"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="margin">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="marginPercent"/>
+            <PropertyValue Property="Title" String="Profit Margin %"/>
+            <PropertyValue Property="TargetValue" Int="60"/>
+            <PropertyValue Property="Criticality" EnumMember="UI.CriticalityType/Positive"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/OverallPerformance">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance/ID">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance/revenueUSD">
+        <Annotation Term="Common.Label" String="Total Revenue (USD)"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance/costUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance/profitUSD">
+        <Annotation Term="Common.Label" String="Total Profit (USD)"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance/totalQuantity">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance/orderCount">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.OverallPerformance/marginPercent">
+        <Annotation Term="Common.Label" String="Profit Margin %"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/Customers">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/Sales">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.Sales/revenueUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.Sales/costUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.Sales/profitUSD">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.Sales/marginPercent">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.Sales/revenueLocal">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.Sales/costLocal">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.Sales/profitLocal">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/Stores">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/Products">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="AnalyticsService.EntityContainer/ExchangeRates">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

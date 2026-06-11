@@ -1,0 +1,20 @@
+{
+  "name": "salesoverview",
+  "version": "0.0.1",
+  "description": "Overview Page: KPI cards and analytic charts",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^4.0.33",
+    "@sap/ux-ui5-tooling": "1",
+    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+  },
+  "scripts": {
+    "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+  }
+}

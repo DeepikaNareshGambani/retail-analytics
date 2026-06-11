@@ -44,38 +44,41 @@ entity SalesFacts as select from ra.Sales {
       store.country      as storeCountry : String(100),
       store.state        as storeState   : String(100),
       store.squareMeters as squareMeters : Decimal(12, 2),
+      // Sales channel: StoreKey 0 is the Online store; everything else is a
+      // physical store. Drives the Online vs Physical breakdown.
+      case when store.StoreKey = 0 then 'Online' else 'Physical' end as channel : String(8),
 
       currencyCode,
       quantity,
-      quantity * product.unitPriceUSD                         as revenueUSD : Decimal(15, 2),
-      quantity * product.unitCostUSD                          as costUSD    : Decimal(15, 2),
-      quantity * (product.unitPriceUSD - product.unitCostUSD) as profitUSD  : Decimal(15, 2),
+      round(quantity * product.unitPriceUSD, 2)                         as revenueUSD : Decimal(15, 2),
+      round(quantity * product.unitCostUSD, 2)                          as costUSD    : Decimal(15, 2),
+      round(quantity * (product.unitPriceUSD - product.unitCostUSD), 2) as profitUSD  : Decimal(15, 2),
 };
 
 /** 1. Revenue by Country — geographic demand, keyed on customer country. */
 entity RevenueByCountry as select from SalesFacts {
   key customerCountry          as country       : String(100),
       customerContinent        as continent     : String(50),
-      sum(revenueUSD)          as revenueUSD    : Decimal(15, 2),
-      sum(costUSD)             as costUSD       : Decimal(15, 2),
-      sum(profitUSD)           as profitUSD     : Decimal(15, 2),
+      round(sum(revenueUSD), 2) as revenueUSD    : Decimal(15, 2),
+      round(sum(costUSD), 2)    as costUSD       : Decimal(15, 2),
+      round(sum(profitUSD), 2)  as profitUSD     : Decimal(15, 2),
       sum(quantity)            as totalQuantity : Integer,
       count(distinct orderNumber) as orderCount : Integer,
       case when sum(revenueUSD) > 0
-           then sum(profitUSD) / sum(revenueUSD) * 100
+           then round(sum(profitUSD) / sum(revenueUSD) * 100, 2)
            else 0 end          as marginPercent : Decimal(7, 2),
 } group by customerCountry, customerContinent;
 
 /** 2. Revenue by Product Category. */
 entity RevenueByCategory as select from SalesFacts {
   key category                  as category      : String(100),
-      sum(revenueUSD)          as revenueUSD    : Decimal(15, 2),
-      sum(costUSD)             as costUSD       : Decimal(15, 2),
-      sum(profitUSD)           as profitUSD     : Decimal(15, 2),
+      round(sum(revenueUSD), 2) as revenueUSD    : Decimal(15, 2),
+      round(sum(costUSD), 2)    as costUSD       : Decimal(15, 2),
+      round(sum(profitUSD), 2)  as profitUSD     : Decimal(15, 2),
       sum(quantity)            as totalQuantity : Integer,
       count(distinct productKey) as productCount : Integer,
       case when sum(revenueUSD) > 0
-           then sum(profitUSD) / sum(revenueUSD) * 100
+           then round(sum(profitUSD) / sum(revenueUSD) * 100, 2)
            else 0 end          as marginPercent : Decimal(7, 2),
 } group by category;
 
@@ -83,9 +86,9 @@ entity RevenueByCategory as select from SalesFacts {
 entity MonthlySalesTrend as select from SalesFacts {
   key orderYear                as salesYear     : Integer,
   key orderMonth               as salesMonth    : Integer,
-      sum(revenueUSD)          as revenueUSD    : Decimal(15, 2),
-      sum(costUSD)             as costUSD       : Decimal(15, 2),
-      sum(profitUSD)           as profitUSD     : Decimal(15, 2),
+      round(sum(revenueUSD), 2) as revenueUSD    : Decimal(15, 2),
+      round(sum(costUSD), 2)    as costUSD       : Decimal(15, 2),
+      round(sum(profitUSD), 2)  as profitUSD     : Decimal(15, 2),
       sum(quantity)            as totalQuantity : Integer,
       count(distinct orderNumber) as orderCount : Integer,
 } group by orderYear, orderMonth
@@ -101,11 +104,11 @@ entity TopProducts as select from SalesFacts {
       productName              as productName   : String(300),
       brand                    as brand         : String(100),
       category                 as category      : String(100),
-      sum(revenueUSD)          as revenueUSD    : Decimal(15, 2),
-      sum(profitUSD)           as profitUSD     : Decimal(15, 2),
+      round(sum(revenueUSD), 2) as revenueUSD    : Decimal(15, 2),
+      round(sum(profitUSD), 2)  as profitUSD     : Decimal(15, 2),
       sum(quantity)            as totalQuantity : Integer,
       case when sum(revenueUSD) > 0
-           then sum(profitUSD) / sum(revenueUSD) * 100
+           then round(sum(profitUSD) / sum(revenueUSD) * 100, 2)
            else 0 end          as marginPercent : Decimal(7, 2),
 } group by productKey, productName, brand, category;
 
@@ -118,17 +121,34 @@ entity StorePerformance as select from SalesFacts {
       storeCountry             as country       : String(100),
       storeState               as state         : String(100),
       squareMeters             as squareMeters  : Decimal(12, 2),
-      sum(revenueUSD)          as revenueUSD    : Decimal(15, 2),
-      sum(profitUSD)           as profitUSD     : Decimal(15, 2),
+      round(sum(revenueUSD), 2) as revenueUSD    : Decimal(15, 2),
+      round(sum(profitUSD), 2)  as profitUSD     : Decimal(15, 2),
       sum(quantity)            as totalQuantity : Integer,
       count(distinct orderNumber) as orderCount : Integer,
       case when sum(revenueUSD) > 0
-           then sum(profitUSD) / sum(revenueUSD) * 100
+           then round(sum(profitUSD) / sum(revenueUSD) * 100, 2)
            else 0 end          as marginPercent : Decimal(7, 2),
       case when squareMeters > 0
-           then sum(revenueUSD) / squareMeters
+           then round(sum(revenueUSD) / squareMeters, 2)
            else null end       as revenuePerSqm : Decimal(15, 2),
 } group by storeKey, storeCountry, storeState, squareMeters;
+
+/**
+ * Grand-total KPIs as a single row, used to drive the Overview Page KPI cards
+ * (Revenue, Profit, Margin %). A constant key (ID = 1) gives the entity an
+ * OData key; with no GROUP BY the aggregates collapse to one total row.
+ */
+entity OverallPerformance as select from SalesFacts {
+  key 1                       as ID            : Integer,
+      round(sum(revenueUSD), 2) as revenueUSD    : Decimal(15, 2),
+      round(sum(costUSD), 2)    as costUSD       : Decimal(15, 2),
+      round(sum(profitUSD), 2)  as profitUSD     : Decimal(15, 2),
+      sum(quantity)           as totalQuantity : Integer,
+      count(distinct orderNumber) as orderCount : Integer,
+      case when sum(revenueUSD) > 0
+           then round(sum(profitUSD) / sum(revenueUSD) * 100, 2)
+           else 0 end         as marginPercent : Decimal(7, 2),
+};
 
 /*
  * Expose all views read-only on the existing AnalyticsService (/analytics).
@@ -143,4 +163,5 @@ extend service AnalyticsService with {
   @readonly @cds.redirection.target: false entity MonthlySalesTrend as projection on dashboard.MonthlySalesTrend;
   @readonly @cds.redirection.target: false entity TopProducts       as projection on dashboard.TopProducts;
   @readonly @cds.redirection.target: false entity StorePerformance  as projection on dashboard.StorePerformance;
+  @readonly @cds.redirection.target: false entity OverallPerformance as projection on dashboard.OverallPerformance;
 }
