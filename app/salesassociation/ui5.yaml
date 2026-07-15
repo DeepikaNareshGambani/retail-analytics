@@ -2,21 +2,21 @@
 
 specVersion: "4.0"
 metadata:
-  name: retail.analytics.salesoverview
+  name: retail.analytics.salesassociation
 type: application
 server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - path: /analytics
+          - path: /association
             url: http://localhost
     - name: fiori-tools-appreload
       afterMiddleware: compression
@@ -24,13 +24,3 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /analytics
-            metadataPath: ./webapp/localService/mainService/metadata.xml
-            mockdataPath: ./webapp/localService/mainService/data
-            generateMockData: true
-        annotations: []

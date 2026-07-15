@@ -1,9 +1,9 @@
 sap.ui.define(
-    ["sap/ovp/app/Component"],
+    ["sap/fe/core/AppComponent"],
     function (Component) {
         "use strict";
 
-        return Component.extend("retail.analytics.salesoverview.Component", {
+        return Component.extend("retail.analytics.salesassociation.Component", {
             metadata: {
                 manifest: "json"
             }
