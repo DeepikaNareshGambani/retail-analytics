@@ -16,6 +16,9 @@ using retail.analytics.aiinsights as aiinsights from '../db/ai-insights';
 @impl : 'srv/ai-service.js'
 service AIService {
 
+  // Single-row dashboard (headline KPIs) driving the Object Page KPI header.
+  @readonly entity AIDashboards      as projection on aiinsights.AIDashboard;
+
   // Executive insights (top opportunities + risks) as a queryable entity for the
   // Fiori Elements narrative table. Materialized at startup.
   @readonly entity ExecutiveInsights as projection on aiinsights.ExecutiveInsight;

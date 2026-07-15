@@ -35,15 +35,14 @@ Write a board-ready narrative of 3-4 short paragraphs, grounded ONLY in the prov
 Never invent figures, markets, or trends beyond the data. Professional, concise, direct — no bullet lists, no headings, prose only.`
 
 module.exports = cds.service.impl(async function () {
-  // Populate the executive-insights table lazily on first read. Doing it here
-  // (rather than in a 'served' hook) guarantees the Task 3 stat tables are
-  // already populated, so the snapshot — and thus the summary — is complete.
+  // Populate the dashboard + insights tables lazily on first read of either.
+  // Doing it here (rather than in a 'served' hook) guarantees the Task 3 stat
+  // tables are already populated, so the snapshot — and thus the summary — is
+  // complete.
   let insightsReady = false
-  this.before('READ', 'ExecutiveInsights', async () => {
-    if (insightsReady) return
-    await populateInsights()
-    insightsReady = true
-  })
+  const ensure = async () => { if (insightsReady) return; await populateInsights(); insightsReady = true }
+  this.before('READ', 'AIDashboards', ensure)
+  this.before('READ', 'ExecutiveInsights', ensure)
 
   this.on('getKPISnapshot',      async () => JSON.stringify(await buildSnapshot()))
   this.on('getExecutiveSummary', async () => JSON.stringify(await buildExecutiveSummary()))
@@ -89,17 +88,30 @@ async function buildExecutiveSummary() {
   return { ...executiveSummary(snapshot), provider: 'deterministic (grounded in snapshot)' }
 }
 
-// Materialize the executive summary into the ExecutiveInsight table.
+// Materialize the dashboard KPIs + executive summary into their tables.
 async function populateInsights() {
-  const { ExecutiveInsight } = cds.entities('retail.analytics.aiinsights')
-  const { opportunities, risks } = executiveSummary(await buildSnapshot())
+  const { AIDashboard, ExecutiveInsight } = cds.entities('retail.analytics.aiinsights')
+  const snapshot = await buildSnapshot()
+  const { opportunities, risks } = executiveSummary(snapshot)
+  const hd = snapshot.headline || {}
+  const topMarket = (snapshot.geography && snapshot.geography.allCountries && snapshot.geography.allCountries[0] || {}).country
+
   const rows = [
-    ...opportunities.map((insight, i) => ({ ID: i + 1,       category: 'Opportunity', rank: i + 1, insight, criticality: 3 })),
-    ...risks.map((insight, i)         => ({ ID: 100 + i + 1, category: 'Risk',        rank: i + 1, insight, criticality: 1 })),
+    ...opportunities.map((insight, i) => ({ ID: i + 1,       dash: 1, category: 'Opportunity', rank: i + 1, insight, criticality: 3 })),
+    ...risks.map((insight, i)         => ({ ID: 100 + i + 1, dash: 1, category: 'Risk',        rank: i + 1, insight, criticality: 1 })),
   ]
+
   await DELETE.from(ExecutiveInsight)
+  await DELETE.from(AIDashboard)
   if (rows.length) await INSERT.into(ExecutiveInsight).entries(rows)
-  cds.log('ai').info(`materialized ${opportunities.length} opportunities + ${risks.length} risks`)
+  await INSERT.into(AIDashboard).entries([{
+    ID: 1,
+    title: 'Global Electronics — Sales Health',
+    topMarket,
+    revenueUSD: hd.revenueUSD, profitUSD: hd.profitUSD, marginPercent: hd.marginPercent,
+    totalOrders: hd.totalOrders, totalUnits: hd.totalUnits,
+  }])
+  cds.log('ai').info(`materialized dashboard + ${opportunities.length} opportunities + ${risks.length} risks`)
 }
 
 // Task 1 analytical views

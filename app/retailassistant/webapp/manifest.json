@@ -43,22 +43,42 @@
         }
       }
     },
+    "resources": {
+      "css": [
+        { "uri": "css/style.css" }
+      ]
+    },
     "routing": {
       "routes": [
-        { "pattern": ":?query:", "name": "InsightsList", "target": "InsightsList" }
+        { "pattern": ":?query:", "name": "DashboardList", "target": "DashboardList" },
+        { "pattern": "AIDashboards({key}):?query:", "name": "Dashboard", "target": "Dashboard" }
       ],
       "targets": {
-        "InsightsList": {
+        "DashboardList": {
           "type": "Component",
-          "id": "InsightsList",
+          "id": "DashboardList",
           "name": "sap.fe.templates.ListReport",
           "options": {
             "settings": {
-              "entitySet": "ExecutiveInsights",
+              "entitySet": "AIDashboards",
               "variantManagement": "None",
               "initialLoad": "Enabled",
+              "navigation": {
+                "AIDashboards": { "detail": { "route": "Dashboard" } }
+              }
+            }
+          }
+        },
+        "Dashboard": {
+          "type": "Component",
+          "id": "Dashboard",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "entitySet": "AIDashboards",
+              "editableHeaderContent": false,
               "controlConfiguration": {
-                "@com.sap.vocabularies.UI.v1.LineItem": {
+                "insights/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": { "type": "ResponsiveTable", "selectionMode": "None" },
                   "actions": {
                     "askAssistant": {

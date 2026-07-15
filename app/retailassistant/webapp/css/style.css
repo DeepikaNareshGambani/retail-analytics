@@ -1,0 +1,60 @@
+/* Task 4 — Virtual Store Manager chat dialog styling */
+
+.rsaChatDialog .sapMDialogScrollCont { padding: 0; }
+
+.rsaChatScroll {
+    background-color: #eef1f5;
+    padding: 0.85rem;
+}
+
+.rsaMsgRow { width: 100%; margin-bottom: 0.55rem; }
+
+.rsaBubble {
+    max-width: 82%;
+    padding: 0.55rem 0.8rem;
+    border-radius: 14px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+}
+.rsaBubble .sapMText { white-space: pre-wrap; line-height: 1.4; }
+
+.rsaBubbleUser {
+    background-color: #0a6ed1;
+    border-bottom-right-radius: 4px;
+}
+.rsaBubbleUser .sapMText { color: #ffffff; }
+
+.rsaBubbleAI {
+    background-color: #ffffff;
+    border: 1px solid #dcdfe4;
+    border-bottom-left-radius: 4px;
+}
+.rsaBubbleAI .sapMText { color: #32363a; }
+
+.rsaTyping .sapMText { color: #6a6d70; font-style: italic; }
+
+.rsaAvatar {
+    color: #0a6ed1;
+    font-size: 1.15rem;
+    margin: 0.15rem 0.45rem 0 0;
+}
+
+.rsaChips { margin-top: 0.35rem; }
+.rsaChips .sapMBtn { margin: 0 0.35rem 0.35rem 0; }
+.rsaChip .sapMBtnInner { border-radius: 16px; }
+
+.rsaInputBar {
+    padding: 0.5rem 0.75rem 0.6rem;
+    border-top: 1px solid #e5e5e5;
+    background-color: #ffffff;
+}
+.rsaInputBar .sapMInputBaseInner { }
+
+.rsaHeaderIcon { color: #0a6ed1; margin-right: 0.5rem; }
+
+/* dark theme touch-ups */
+@media (prefers-color-scheme: dark) {
+    .rsaChatScroll { background-color: #22262b; }
+    .rsaBubbleAI { background-color: #2b3038; border-color: #3a3f47; }
+    .rsaBubbleAI .sapMText { color: #eaecee; }
+    .rsaInputBar { background-color: #1c1f24; border-top-color: #3a3f47; }
+}
