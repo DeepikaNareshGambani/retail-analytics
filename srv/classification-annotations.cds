@@ -63,7 +63,7 @@ annotate ClassificationService.CustomerSegments with @(
     { $Type : 'UI.DataField', Value : FrequencyScore },
     { $Type : 'UI.DataField', Value : MonetaryScore }
   ],
-  UI.PresentationVariant : { SortOrder : [ { Property : TotalSpendUSD, Descending : true } ], Visualizations : [ '@UI.Chart#Chart', '@UI.LineItem' ] },
+  UI.PresentationVariant : { SortOrder : [ { Property : TotalSpendUSD, Descending : true } ], Visualizations : [ '@UI.Chart#Chart' ] },
   UI.SelectionPresentationVariant #Main : { Text : 'Customer Segmentation', SelectionVariant : { Text : 'Customer Segmentation' }, PresentationVariant : ![@UI.PresentationVariant] }
 );
 
@@ -113,7 +113,7 @@ annotate ClassificationService.ProductTiers with @(
     { $Type : 'UI.DataField', Value : TotalQuantitySold },
     { $Type : 'UI.DataField', Value : TotalRevenueUSD }
   ],
-  UI.PresentationVariant : { SortOrder : [ { Property : TotalRevenueUSD, Descending : true } ], Visualizations : [ '@UI.Chart#Chart', '@UI.LineItem' ] },
+  UI.PresentationVariant : { SortOrder : [ { Property : TotalRevenueUSD, Descending : true } ], Visualizations : [ '@UI.Chart#Chart' ] },
   UI.SelectionPresentationVariant #Main : { Text : 'Product Performance', SelectionVariant : { Text : 'Product Performance' }, PresentationVariant : ![@UI.PresentationVariant] }
 );
 
@@ -162,6 +162,6 @@ annotate ClassificationService.StoreTiers with @(
     { $Type : 'UI.DataField', Value : SquareMeters },
     { $Type : 'UI.DataField', Value : PercentileRank }
   ],
-  UI.PresentationVariant : { SortOrder : [ { Property : RevenuePerSquareMeter, Descending : true } ], Visualizations : [ '@UI.Chart#Chart', '@UI.LineItem' ] },
+  UI.PresentationVariant : { SortOrder : [ { Property : RevenuePerSquareMeter, Descending : true } ], Visualizations : [ '@UI.Chart#Chart' ] },
   UI.SelectionPresentationVariant #Main : { Text : 'Store Efficiency', SelectionVariant : { Text : 'Store Efficiency' }, PresentationVariant : ![@UI.PresentationVariant] }
 );

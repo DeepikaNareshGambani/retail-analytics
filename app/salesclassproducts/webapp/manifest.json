@@ -1,7 +1,7 @@
 {
   "_version": "1.33.0",
   "sap.app": {
-    "id": "retail.analytics.salesclassification",
+    "id": "retail.analytics.salesclassproducts",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": { "version": "0.0.1" },
@@ -17,7 +17,7 @@
   },
   "sap.ui": {
     "technology": "UI5",
-    "icons": { "icon": "sap-icon://segmentation" },
+    "icons": { "icon": "sap-icon://product" },
     "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
   },
   "sap.ui5": {
@@ -30,7 +30,7 @@
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "retail.analytics.salesclassification.i18n.i18n" }
+        "settings": { "bundleName": "retail.analytics.salesclassproducts.i18n.i18n" }
       },
       "": {
         "dataSource": "mainService",
@@ -45,16 +45,16 @@
     },
     "routing": {
       "routes": [
-        { "pattern": ":?query:", "name": "ClassificationList", "target": "ClassificationList" }
+        { "pattern": ":?query:", "name": "ProductTiersList", "target": "ProductTiersList" }
       ],
       "targets": {
-        "ClassificationList": {
+        "ProductTiersList": {
           "type": "Component",
-          "id": "ClassificationList",
+          "id": "ProductTiersList",
           "name": "sap.fe.templates.ListReport",
           "options": {
             "settings": {
-              "entitySet": "CustomerSegments",
+              "entitySet": "ProductTiers",
               "variantManagement": "None",
               "initialLoad": "Enabled",
               "controlConfiguration": {

@@ -27,7 +27,7 @@
     "watch-retailinsights": "cds watch --open retailinsights/webapp/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-salesassociation": "cds watch --open salesassociation/webapp/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-retailassistant": "cds watch --open retailassistant/webapp/index.html?sap-ui-xx-viewCache=false --livereload false",
-    "watch-salesclassification": "cds watch --open salesclassification/webapp/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-classificationtool": "cds watch --open classificationtool/flpSandbox.html --livereload false"
   },
   "private": true,
   "cds": {
@@ -55,7 +55,9 @@
     "app/retailinsights",
     "app/salesassociation",
     "app/retailassistant",
-    "app/salesclassification"
+    "app/salesclassification",
+    "app/salesclassproducts",
+    "app/salesclassstores"
   ],
   "description": "Welcome to your new CAP project.",
   "main": "index.js",
