@@ -1,0 +1,86 @@
+{
+  "_version": "1.33.0",
+  "sap.app": {
+    "id": "retail.analytics.retailassistant",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "0.0.1" },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/ai/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": { "icon": "sap-icon://ai" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.90.0",
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.fe.templates": {} }
+    },
+    "contentDensities": { "compact": true, "cozy": true },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": { "bundleName": "retail.analytics.retailassistant.i18n.i18n" }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        { "pattern": ":?query:", "name": "InsightsList", "target": "InsightsList" }
+      ],
+      "targets": {
+        "InsightsList": {
+          "type": "Component",
+          "id": "InsightsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "ExecutiveInsights",
+              "variantManagement": "None",
+              "initialLoad": "Enabled",
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": { "type": "ResponsiveTable", "selectionMode": "None" },
+                  "actions": {
+                    "askAssistant": {
+                      "id": "askAssistantBtn",
+                      "text": "{i18n>askAssistant}",
+                      "press": "retail.analytics.retailassistant.ext.AssistantHandler.onAskAssistant",
+                      "enabled": true
+                    },
+                    "downloadReport": {
+                      "id": "downloadReportBtn",
+                      "text": "{i18n>downloadReport}",
+                      "press": "retail.analytics.retailassistant.ext.AssistantHandler.onDownloadReport",
+                      "enabled": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": { "registrationIds": [], "archeType": "analytical" }
+}

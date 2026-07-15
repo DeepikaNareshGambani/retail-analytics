@@ -10,9 +10,15 @@
  *
  * Kept separate (own path /ai, own impl) so Tasks 1-3 stay untouched.
  */
+using retail.analytics.aiinsights as aiinsights from '../db/ai-insights';
+
 @path : '/ai'
 @impl : 'srv/ai-service.js'
 service AIService {
+
+  // Executive insights (top opportunities + risks) as a queryable entity for the
+  // Fiori Elements narrative table. Materialized at startup.
+  @readonly entity ExecutiveInsights as projection on aiinsights.ExecutiveInsight;
 
   // Compact JSON snapshot of headline KPIs, regional extremes, store anomalies,
   // and the Task 3 association findings. Returned as a JSON string so it can be
@@ -21,7 +27,8 @@ service AIService {
 
   // Virtual Store Manager / Explanation Bot: answers a natural-language question
   // grounded strictly in the KPI snapshot. Returns { answer, provider } as JSON.
-  action explainKPI(question : String) returns String;
+  // A function (read-only, no side effects) so the UI can call it via GET.
+  function explainKPI(question : String) returns String;
 
   // Executive summary: top 3 growth opportunities + top 3 risk areas, grounded
   // in the snapshot. Returns { opportunities:[], risks:[], provider } as JSON.

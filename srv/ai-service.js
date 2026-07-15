@@ -35,6 +35,16 @@ Write a board-ready narrative of 3-4 short paragraphs, grounded ONLY in the prov
 Never invent figures, markets, or trends beyond the data. Professional, concise, direct — no bullet lists, no headings, prose only.`
 
 module.exports = cds.service.impl(async function () {
+  // Populate the executive-insights table lazily on first read. Doing it here
+  // (rather than in a 'served' hook) guarantees the Task 3 stat tables are
+  // already populated, so the snapshot — and thus the summary — is complete.
+  let insightsReady = false
+  this.before('READ', 'ExecutiveInsights', async () => {
+    if (insightsReady) return
+    await populateInsights()
+    insightsReady = true
+  })
+
   this.on('getKPISnapshot',      async () => JSON.stringify(await buildSnapshot()))
   this.on('getExecutiveSummary', async () => JSON.stringify(await buildExecutiveSummary()))
   this.on('explainKPI',          async (req) => JSON.stringify(await explain(req.data.question)))
@@ -77,6 +87,19 @@ async function explain(question) {
 async function buildExecutiveSummary() {
   const snapshot = await buildSnapshot()
   return { ...executiveSummary(snapshot), provider: 'deterministic (grounded in snapshot)' }
+}
+
+// Materialize the executive summary into the ExecutiveInsight table.
+async function populateInsights() {
+  const { ExecutiveInsight } = cds.entities('retail.analytics.aiinsights')
+  const { opportunities, risks } = executiveSummary(await buildSnapshot())
+  const rows = [
+    ...opportunities.map((insight, i) => ({ ID: i + 1,       category: 'Opportunity', rank: i + 1, insight, criticality: 3 })),
+    ...risks.map((insight, i)         => ({ ID: 100 + i + 1, category: 'Risk',        rank: i + 1, insight, criticality: 1 })),
+  ]
+  await DELETE.from(ExecutiveInsight)
+  if (rows.length) await INSERT.into(ExecutiveInsight).entries(rows)
+  cds.log('ai').info(`materialized ${opportunities.length} opportunities + ${risks.length} risks`)
 }
 
 // Task 1 analytical views
