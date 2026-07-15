@@ -1,43 +1,68 @@
 {
-    "name": "retail-analytics",
-    "version": "1.0.0",
-    "dependencies": {
-        "@cap-js/hana": "^2",
-        "@sap-cloud-sdk/http-client": "^4.7.0",
-        "@sap-cloud-sdk/util": "^4.7.0",
-        "@sap/cds": "^9",
-        "@sap/low-code-event-handler": "^1.2.5",
-        "@sap/xsenv": ">=3.3.2 <3.3.3",
-        "@sap/xssec": "^4.13.0",
-        "hdb": "^2.27.1",
-        "passport": "^0.7.0"
-    },
-    "devDependencies": {
-        "@cap-js/sqlite": "^2.4",
-        "@sap/dev-cap-tools": "^1.31.0"
-    },
-    "scripts": {
-        "start": "cds-serve",
-        "start-local": "npm run generate-entry-point && npm run cds-watch",
-        "generate-entry-point": "dev-cap-tools gen-entrypoint",
-        "cds-watch": "cds watch --open"
-    },
-    "private": true,
-    "cds": {
-        "requires": {
-            "[production]": {
-                "db": "hana",
-                "auth": "xsuaa"
-            },
-            "auth": {
-                "[development]": {
-                    "kind": "dummy"
-                },
-                "[production]": {
-                    "kind": "xsuaa"
-                }
-            }
+  "name": "retail-analytics",
+  "version": "1.0.0",
+  "dependencies": {
+    "@cap-js/hana": "^2",
+    "@sap-cloud-sdk/http-client": "^4.7.0",
+    "@sap-cloud-sdk/util": "^4.7.0",
+    "@sap/cds": "^9",
+    "@sap/low-code-event-handler": "^1.2.5",
+    "@sap/xsenv": ">=3.3.2 <3.3.3",
+    "@sap/xssec": "^4.13.0",
+    "hdb": "^2.27.1",
+    "passport": "^0.7.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2.4",
+    "@sap/dev-cap-tools": "^1.31.0",
+    "cds-plugin-ui5": "^0.17.0"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "start-local": "npm run generate-entry-point && npm run cds-watch",
+    "generate-entry-point": "dev-cap-tools gen-entrypoint",
+    "cds-watch": "cds watch --open",
+    "watch-salesanalytics": "cds watch --open salesanalytics/webapp/test/flpSandbox.html?sap-ui-xx-viewCache=false#salesanalytics-display --livereload false",
+    "watch-salesoverview": "cds watch --open retail.analytics.salesoverview/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-retailinsights": "cds watch --open retailinsights/webapp/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "cds": {
+    "requires": {
+      "[production]": {
+        "db": "hana",
+        "auth": "xsuaa"
+      },
+      "auth": {
+        "[development]": {
+          "kind": "dummy"
+        },
+        "[production]": {
+          "kind": "xsuaa"
         }
-    },
-    "lcap": true
+      }
+    }
+  },
+  "lcap": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/salesanalytics",
+    "app/salesoverview",
+    "app/retailinsights"
+  ],
+  "description": "Welcome to your new CAP project.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeepikaNareshGambani/retail-analytics.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DeepikaNareshGambani/retail-analytics/issues"
+  },
+  "homepage": "https://github.com/DeepikaNareshGambani/retail-analytics#readme"
 }

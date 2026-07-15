@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Retail Insights</title>
+    <style>
+        html, body, #content {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        /*
+         * The full height chain MUST be 100% at every level or sap.m.Page (which
+         * positions its content scroll area absolutely) collapses to a thin strip
+         * with a grey gap below. ComponentSupport renders the ComponentContainer
+         * (#container) INSIDE the data-sap-ui-component host div, so the chain is:
+         *   body#content > div[data-sap-ui-component] > #container > .sapUiView > .sapMPage
+         * Every one of these needs height:100% -- the host div (body > div) and the
+         * .sapUiView wrapper were the missing links.
+         */
+        body > div,
+        #container,
+        #container-uiarea,
+        #container > div,
+        #container .sapUiView,
+        #container .sapMPage {
+            height: 100%;
+        }
+    </style>
+    <script
+        id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/1.120.0/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resource-roots='{
+            "retail.analytics.retailinsights": "./"
+        }'
+        data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-compat-version="edge"
+        data-sap-ui-async="true"
+        data-sap-ui-frame-options="trusted"
+    ></script>
+</head>
+<body class="sapUiBody" id="content">
+    <div
+        data-sap-ui-component
+        data-name="retail.analytics.retailinsights"
+        data-id="container"
+        data-settings='{"id" : "retail.analytics.retailinsights"}'
+        data-handle-validation="true"
+    ></div>
+</body>
+</html>
