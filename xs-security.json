@@ -1,6 +1,27 @@
 {
-  "scopes": [],
+  "xsappname": "retail-analytics",
+  "tenant-mode": "dedicated",
+  "description": "Retail & Inventory Global Electronics Sales Analytics",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Viewer",
+      "description": "View the Retail Analytics suite"
+    }
+  ],
   "attributes": [],
-  "role-templates": [],
-  "authorities-inheritance": false
+  "role-templates": [
+    {
+      "name": "Viewer",
+      "description": "Retail Analytics Viewer",
+      "scope-references": ["$XSAPPNAME.Viewer"],
+      "attribute-references": []
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "RetailAnalyticsViewer",
+      "description": "Retail Analytics Viewer",
+      "role-template-references": ["$XSAPPNAME.Viewer"]
+    }
+  ]
 }

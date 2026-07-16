@@ -8,13 +8,14 @@
     "@sap/cds": "^9",
     "@sap/low-code-event-handler": "^1.2.5",
     "@sap/xsenv": ">=3.3.2 <3.3.3",
-    "@sap/xssec": "^4.13.0",
+    "@sap/xssec": "^4",
     "hdb": "^2.27.1",
     "passport": "^0.7.0",
     "pdfkit": "^0.19.1"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2.4",
+    "@sap/cds-dk": "^9",
     "@sap/dev-cap-tools": "^1.31.0",
     "cds-plugin-ui5": "^0.17.0"
   },

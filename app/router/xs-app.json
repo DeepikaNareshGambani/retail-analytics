@@ -1,0 +1,18 @@
+{
+  "welcomeFile": "/home/flpSandbox.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/(ai|association|classification|analytics|admin|insights|reports|odata)(/.*)?$",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true
+    },
+    {
+      "source": "^/(.*)$",
+      "localDir": "resources",
+      "authenticationType": "xsuaa",
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    }
+  ]
+}
