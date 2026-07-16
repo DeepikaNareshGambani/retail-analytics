@@ -124,4 +124,4 @@ SAP CAP (Node.js) · OData V4 · SAP Fiori Elements (ALP, List Report, Object Pa
 - Native pdfkit charts in the RPT-1 PDF; revenue-efficiency anomaly detection; unified launchpad.
 
 ## Contributors
-Deepika Naresh Gambani · Monica Pei · Yuyang Pei
+Deepika Naresh Gambani
