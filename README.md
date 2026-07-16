@@ -1,3 +1,4 @@
+Deployed Project Link: https://btplearning-btpailearning-student5-retail-analytics.cfapps.us10.hana.ondemand.com
 # Retail & Inventory: Global Electronics Sales Analytics
 
 A production-grade analytics suite on **SAP BTP**, built on the **SAP Cloud Application Programming Model (CAP, Node.js)** with **native SAP Fiori Elements** over **OData V4**, deployed to **Cloud Foundry** as a Multi-Target Application (HANA + XSUAA + approuter) behind a unified **Fiori Launchpad**.
