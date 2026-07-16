@@ -1,6 +1,7 @@
 const cds = require('@sap/cds')
 const llm = require('./lib/llm')
 const { executiveSummary, explainFallback, reportNarrativeFallback } = require('./lib/ai-fallback')
+const { BOT_SYSTEM_PROMPT, REPORT_SYSTEM_PROMPT } = require('./lib/prompts')
 
 /**
  * Task 4 — AIService implementation (/ai).
@@ -16,23 +17,8 @@ const { executiveSummary, explainFallback, reportNarrativeFallback } = require('
  * configured — so the features work locally and against RPT-1 once deployed.
  */
 
-// ===========================================================================
-// PROMPTS (kept as named constants so they are easy to lift into the report —
-// prompt engineering is graded).
-// ===========================================================================
-const BOT_SYSTEM_PROMPT = `You are the "Virtual Store Manager", an analytics assistant for a global electronics retailer.
-You answer ONLY from the JSON KPI snapshot supplied in the user message. Every monetary value in it is already USD-normalized.
-
-Rules:
-- Use only facts present in the snapshot. Never invent numbers, stores, countries, categories, or trends. If the answer is not in the data, say so plainly and suggest what the manager could ask instead.
-- Be concise and specific; quote the actual figures you used.
-- Because all values are USD-normalized, explain margin/profit differences as product-mix and pricing effects, NOT currency effects.
-- You may reference the pre-computed anomalies (high revenue but poor revenue-per-square-meter) and the association findings (demographic affinity, store-size↔revenue correlation, price elasticity).
-- Answer as a knowledgeable colleague: 2-5 short sentences, no preamble.`
-
-const REPORT_SYSTEM_PROMPT = `You are SAP RPT-1, generating the executive narrative for an "Annual Global Sales Review" for a global electronics retailer.
-Write a board-ready narrative of 3-4 short paragraphs, grounded ONLY in the provided KPI snapshot and executive summary. Cover: overall USD-normalized financial health; the strongest and weakest markets; the demographic affinity and store-size/revenue findings; and the price-elasticity insight. Weave in the top growth opportunities and risks.
-Never invent figures, markets, or trends beyond the data. Professional, concise, direct — no bullet lists, no headings, prose only.`
+// The bot/report system prompts live in ./lib/prompts.js (single source of
+// truth, easy to review — prompt engineering is graded).
 
 module.exports = cds.service.impl(async function () {
   // Populate the dashboard + insights tables lazily on first read of either.

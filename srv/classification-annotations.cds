@@ -16,7 +16,7 @@ annotate ClassificationService.CustomerSegments with @Aggregation.ApplySupported
   $Type                  : 'Aggregation.ApplySupportedType',
   Transformations        : [ 'aggregate', 'groupby', 'filter', 'concat', 'identity' ],
   Rollup                 : #None,
-  GroupableProperties    : [ Segment, Continent, Country, AgeCategory ],
+  GroupableProperties    : [ RFMSegment, Segment, Continent, Country, AgeCategory ],
   AggregatableProperties : [
     { $Type : 'Aggregation.AggregatablePropertyType', Property : TotalSpendUSD },
     { $Type : 'Aggregation.AggregatablePropertyType', Property : OrderCount },
@@ -29,7 +29,8 @@ annotate ClassificationService.CustomerSegments with @(
   Aggregation.CustomAggregate #VIPScore      : 'Edm.Int32'
 );
 annotate ClassificationService.CustomerSegments with {
-  Segment       @Common.Label : 'Segment'        @Analytics.Dimension;
+  RFMSegment    @Common.Label : 'RFM Persona'    @Analytics.Dimension;
+  Segment       @Common.Label : 'Segment (VIP)'  @Analytics.Dimension;
   Continent     @Common.Label : 'Continent'      @Analytics.Dimension;
   Country       @Common.Label : 'Country'        @Analytics.Dimension;
   AgeCategory   @Common.Label : 'Age Category'   @Analytics.Dimension;
@@ -43,16 +44,17 @@ annotate ClassificationService.CustomerSegments with {
 };
 annotate ClassificationService.CustomerSegments with @(
   UI.HeaderInfo : { TypeName : 'Customer', TypeNamePlural : 'Customer Segmentation', Title : { $Type : 'UI.DataField', Value : CustomerName } },
-  UI.SelectionFields : [ Segment, Continent, Country, AgeCategory ],
+  UI.SelectionFields : [ RFMSegment, Segment, Continent, Country, AgeCategory ],
   UI.Chart #Chart : {
     $Type             : 'UI.ChartDefinitionType',
     ChartType         : #Column,
-    Dimensions        : [ Segment ],
+    Dimensions        : [ RFMSegment ],
     Measures          : [ TotalSpendUSD ],
     MeasureAttributes : [ { $Type : 'UI.ChartMeasureAttributeType', Measure : TotalSpendUSD, Role : #Axis1 } ]
   },
   UI.LineItem : [
     { $Type : 'UI.DataField', Value : CustomerName },
+    { $Type : 'UI.DataField', Value : RFMSegment, Criticality : RFMSegmentCriticality, CriticalityRepresentation : #WithIcon },
     { $Type : 'UI.DataField', Value : Segment, Criticality : SegmentCriticality, CriticalityRepresentation : #WithIcon },
     { $Type : 'UI.DataField', Value : Country },
     { $Type : 'UI.DataField', Value : AgeCategory },

@@ -39,7 +39,8 @@ service InsightsService {
         FrequencyScore     : Integer;   // 1..5
         MonetaryScore      : Integer;   // 1..5
         VIPScore           : Integer;   // 3..15  (R+F+M)
-        CustomerSegment    : String(10);// VIP | Regular | At Risk
+        CustomerSegment    : String(10);// VIP | Regular | At Risk (coarse band)
+        RFMSegment         : String(20);// one of 11 RFM personas (fine-grained)
   }
 
   // -- Product Performance (median quadrants) -------------------------------

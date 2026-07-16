@@ -33,6 +33,10 @@ async function populate() {
   const segCrit  = (s) => s === 'VIP' ? 3 : s === 'At Risk' ? 1 : 0
   const quadCrit = (q) => q === 'Star' ? 3 : q === 'Laggard' ? 1 : 0
   const tierCrit = (t) => t === 'Flagship' ? 3 : t === 'Underperforming' ? 1 : 0
+  // RFM persona colour: green = valuable/growing, red = at-risk/lost, orange = watch.
+  const RFM_GREEN = new Set(['Champions', 'Loyal Customers', 'Potential Loyalist', 'New Customers', 'Promising'])
+  const RFM_RED   = new Set(['At Risk', "Can't Lose Them", 'Hibernating', 'Lost'])
+  const rfmCrit = (p) => RFM_GREEN.has(p) ? 3 : RFM_RED.has(p) ? 1 : 2
 
   const custRows = customers.map((c) => ({
     CustomerKey: c.CustomerKey, CustomerName: c.CustomerName, Continent: c.Continent, Country: c.Country,
@@ -40,6 +44,7 @@ async function populate() {
     DaysSinceLastOrder: c.DaysSinceLastOrder, RecencyScore: c.RecencyScore, FrequencyScore: c.FrequencyScore,
     MonetaryScore: c.MonetaryScore, VIPScore: c.VIPScore,
     Segment: c.CustomerSegment, SegmentCriticality: segCrit(c.CustomerSegment),
+    RFMSegment: c.RFMSegment, RFMSegmentCriticality: rfmCrit(c.RFMSegment),
   }))
   const prodRows = products.map((p) => ({
     ProductKey: p.ProductKey, ProductName: p.ProductName, TotalQuantitySold: p.TotalQuantitySold,

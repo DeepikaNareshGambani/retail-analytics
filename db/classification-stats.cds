@@ -26,8 +26,10 @@ entity CustomerSegment {
       FrequencyScore     : Integer;
       MonetaryScore      : Integer;
       VIPScore           : Integer;
-      Segment            : String(10);   // VIP | Regular | At Risk
+      Segment            : String(10);   // VIP | Regular | At Risk (coarse band)
       SegmentCriticality : Integer;      // 3 VIP, 1 At Risk, 0 Regular
+      RFMSegment            : String(20);// one of 11 RFM personas (fine-grained)
+      RFMSegmentCriticality : Integer;   // 3 positive, 2 neutral, 1 at-risk
 }
 
 // Product performance (median quadrants) — one row per product.

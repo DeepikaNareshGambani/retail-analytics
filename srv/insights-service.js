@@ -132,6 +132,10 @@ function computeCustomers(rows, vipThresholdValue) {
       c.VIPScore >= vipThresholdValue ? 'VIP'
       : c.VIPScore <= AT_RISK_MAX_SCORE ? 'At Risk'
       : 'Regular'
+    // Fine-grained persona: combine Frequency + Monetary into one score, then map
+    // the (Recency, FM) cell to one of 11 canonical RFM segments (see RFM_GRID).
+    const fm = clamp(Math.round((c.FrequencyScore + c.MonetaryScore) / 2), 1, 5)
+    c.RFMSegment = rfmPersona(c.RecencyScore, fm)
     delete c._orders; delete c._lastOrder
   }
   return { list, byKey }
@@ -232,6 +236,34 @@ function computeStores(rows, flagshipPct) {
     delete s._rev; delete s._state; delete s._country
   }
   return { list, byKey }
+}
+
+// ===========================================================================
+// RFM persona grid (Putler-style) — rows = Recency score (1..5), columns =
+// combined Frequency+Monetary score (1..5). Every cell resolves to exactly one
+// of the 11 canonical segments, giving a far more actionable classification than
+// a single VIP / Regular / At Risk band. Business meaning per segment:
+//   Champions            recent, frequent, high spend  -> reward, upsell
+//   Loyal Customers      responsive, good spenders     -> membership, cross-sell
+//   Potential Loyalist   recent, mid frequency         -> nurture, recommend
+//   New Customers        very recent, low frequency    -> onboarding
+//   Promising            recent, low spend             -> build awareness
+//   Need Attention       average across the board      -> reactivate offers
+//   About to Sleep       below-average recency         -> win-back before churn
+//   At Risk              spent a lot, long ago         -> personalised win-back
+//   Can't Lose Them      biggest spenders, gone quiet  -> urgent retention
+//   Hibernating          low recency & value           -> low-cost reactivation
+//   Lost                 lowest recency & value         -> ignore or last attempt
+const RFM_GRID = [
+  //  FM: 1                 2                     3                     4                  5
+  /*R1*/ ['Lost',           'Lost',               'At Risk',            "Can't Lose Them", "Can't Lose Them"],
+  /*R2*/ ['Hibernating',    'Hibernating',        'At Risk',            'At Risk',         "Can't Lose Them"],
+  /*R3*/ ['About to Sleep', 'Need Attention',     'Need Attention',     'Loyal Customers', 'Loyal Customers'],
+  /*R4*/ ['Promising',      'Potential Loyalist', 'Potential Loyalist', 'Loyal Customers', 'Champions'],
+  /*R5*/ ['New Customers',  'Potential Loyalist', 'Potential Loyalist', 'Loyal Customers', 'Champions'],
+]
+function rfmPersona(r, fm) {
+  return RFM_GRID[clamp(r, 1, 5) - 1][clamp(fm, 1, 5) - 1]
 }
 
 // ===========================================================================
