@@ -70,7 +70,7 @@ mrows = [
     ("Milestone", "End-term (17.07.2026)"),
     ("Group Members", "Deepika Naresh Gambani, Monica Pei, Yuyang Pei  [verify / complete]"),
     ("GitHub Repository URL", "https://github.com/DeepikaNareshGambani/retail-analytics"),
-    ("Deployed App URL", "[insert approuter URL once the shared HANA is started and cf deploy completes]"),
+    ("Deployed App URL", "https://btplearning-btpailearning-student5-retail-analytics.cfapps.us10.hana.ondemand.com"),
 ]
 for i, (k, v) in enumerate(mrows):
     kc = meta.rows[i].cells[0].paragraphs[0].add_run(k); kc.bold = True
@@ -167,7 +167,7 @@ h("5. Self-Reflection, Excellence & Architecture", 1)
 para("Final Technical Hurdles", bold=True)
 bullet("The single greatest hurdle was making cross-row analytics work under native Fiori Elements. FE charts require $apply aggregation and /$count, which computed @cds.persistence.skip entities cannot serve (charts returned HTTP 500, counts returned 0). We solved it by materializing the computed RFM/quadrant/tier/association results into real HANA tables, populated lazily on first read from the existing service logic — preserving the analytics while giving FE an aggregatable, countable source.")
 bullet("A second hurdle: a multi-view List Report cannot stack a chart above a table or toggle between them, and a hybrid layout crashed the FilterBar. We resolved it by using a single-view Analytical List Page per classification (filter + chart + table stacked), the proven Task 1 pattern.")
-bullet("Deployment surfaced the SQLite→HANA gap and UI-serving. We validated HANA compilation with cds build --production, packaged an MTA (HANA + XSUAA + approuter), and — rather than adopt Work Zone — bundled the UI5 apps into the approuter as static resources with OData paths routed to the CAP backend. (At submission the deploy is complete except for the shared course HANA Cloud instance being started by staff.)")
+bullet("Deployment surfaced the SQLite→HANA gap and UI-serving. We validated HANA compilation with cds build --production, packaged an MTA (HANA + XSUAA + approuter), and — rather than adopt Work Zone — bundled the UI5 apps into the approuter as static resources with OData paths routed to the CAP backend. A concrete environment-parity bug appeared only on HANA: the Customers.stateCode column was String(10), but the source data holds full region names up to 28 characters (e.g. 'North East Lincolnshire'); SQLite silently accepts this while HANA rejects it (error 274, 'inserted value too large'). Widening the column fixed the data load. The application is deployed and live on Cloud Foundry.")
 para("UI Architecture Justification", bold=True)
 bullet("The solution is native Fiori Elements. The launchpad is a standard SAP Fiori Launchpad (sandbox), not a custom wrapper. The retailassistant's chat dialog and PDF button are FE controller extensions / custom actions — a supported extensibility point of Fiori Elements, not an external framework. One freestyle UI5 app (retailinsights) was an early Task 2 exploration; it was fully re-implemented as three native FE ALP apps and is intentionally kept off the launchpad, so no external UI framework is presented in the graded surface.")
 para("Excellence Features (beyond the baseline)", bold=True)

@@ -13,7 +13,7 @@ entity Customers {
       gender      : String(10);
       name        : String(200);
       city        : String(100);
-      stateCode   : String(10);
+      stateCode   : String(100);        // widened: source data holds full region names (HANA enforces width; SQLite does not)
       state       : String(100);
       zipCode     : String(20);          // String: preserves leading zeros / non-numeric codes
       country     : String(100);
